@@ -1,48 +1,36 @@
 <!DOCTYPE html>
-<html>
+<html style="background-color:#34d2eb">
   <head>
     <base target="_top">
-    <title>About | A2E Group Tech</title>
-    <!--<link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">-->
-    <!-- UIkit CSS -->
-    <!--<link rel="stylesheet" href="/uikit.min.css" />-->
-    <!-- UIkit JS -->
-    <!--<script src="/uikit.min.js"></script>
-    <script src="/uikit-icons.min.js"></script>-->
-    <style>
-    body {
-      border: none;
-      margin: 0px;
-      padding: 0px;
-    }
-    iframe { 
-      display: block;
-      background: #000;
-      border: none;
-      height: 100vh;
-      width: 100vw; 
-      margin: 0px;
-      padding: 0px;
-    }
-    </style>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-170035025-1"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'UA-170035025-1');
-    </script>
+    <link href="/head"/>
   </head>
-  <body>
-    <div uk-grid>
-      <div class="uk-width-1-6">
+  <body style="background-color:#34d2eb">
+    <link href="/navbar"/>
+    
+    <div class="uk-flex uk-flex-center"><div class="uk-width-5-6 uk-flex uk-flex-center" uk-grid>
+      <link href="/dashGrid"/>
+    </div></div>
+
+    <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="a2egroup" data-description="Support me on Buy me a coffee!" data-message="" data-color="#5F7FFF" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+
+
+
+    <!-- Footer -->
+    <br>
+    <div class="uk-width-1-1 uk-background-muted uk-position-bottom">
+      <br>
+      <div class="uk-grid uk-child-width-expand uk-text-center">
+        <small><a href="https://a2egroup.us">Homepage</a></small>
+        <small><a href="mailto:contact@a2egroup.us">Contact Us</a></small>
+        <small><a href="#">Submit Feedback</a></small>
       </div>
-      <div class="uk-width-2-3">
-        <iframe src="a2egroup.wordpress.com"></iframe>
-      </div>
-      <div class="uk-width-1-6">
-      </div>
+      <br>
     </div>
+
+    <link href="/playModal"/>
+
+    <link href="/js"/>
+    <div id="user" hidden></div>
+    <div id="pw" hidden></div>
   </body>
 </html>
