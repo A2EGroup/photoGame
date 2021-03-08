@@ -2,13 +2,261 @@
 <html style="background-color:#34d2eb">
   <head>
     <base target="_top">
-    <link href="/head.html"/>
+    <title>Photo Game</title>
+    <meta name="robots" content="noindex">
+        <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.16/dist/css/uikit.min.css"/>
+
+    <!-- UIkit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.16/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.16/dist/js/uikit-icons.min.js"></script>
+
+    <!-- Encrypter -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+    <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js"></script>
+
+    <!-- Icons -->
+    <script src="uikit/dist/js/uikit-icons.min.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BLD8QSSDG1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-BLD8QSSDG1');
+    </script>
+
+    <style>
+      .square {
+        position: relative;
+        width:100%
+      }
+      .square:after {
+        content: "";
+        display: block;
+        padding-bottom: 100%;
+      }
+      .content {
+        position: absolute;
+        width: 100%;
+        overflow: hidden;
+      }
+    </style>
+
+    <!-- Radio Buttons -->
+    <style>
+      .inputGroup {
+        background-color: #fff;
+        display: block;
+        margin: 10px 0;
+        position: relative;
+
+        label {
+          padding: 12px 30px;
+          width: 100%;
+          display: block;
+          text-align: left;
+          color: #3C454C;
+          cursor: pointer;
+          position: relative;
+          z-index: 2;
+          transition: color 200ms ease-in;
+          overflow: hidden;
+
+          &:before {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            content: '';
+            background-color: #5562eb;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale3d(1, 1, 1);
+            transition: all 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
+            opacity: 0;
+            z-index: -1;
+          }
+
+          &:after {
+            width: 32px;
+            height: 32px;
+            content: '';
+            border: 2px solid #D1D7DC;
+            background-color: #fff;
+            background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23fff' fill-rule='nonzero'/%3E%3C/svg%3E ");
+            background-repeat: no-repeat;
+            background-position: 2px 3px;
+            border-radius: 50%;
+            z-index: 2;
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            transition: all 200ms ease-in;
+          }
+        }
+
+        input:checked ~ label {
+          color: #fff;
+
+          &:before {
+            transform: translate(-50%, -50%) scale3d(56, 56, 1);
+            opacity: 1;
+          }
+
+          &:after {
+            background-color: #54E0C7;
+            border-color: #54E0C7;
+          }
+        }
+
+        input {
+          width: 32px;
+          height: 32px;
+          order: 1;
+          z-index: 2;
+          position: absolute;
+          right: 30px;
+          top: 50%;
+          transform: translateY(-50%);
+          cursor: pointer;
+          visibility: hidden;
+        }
+      }
+
+
+    // codepen formatting
+    .form {
+      padding: 0 16px;
+      max-width: 550px;
+      margin: 50px auto;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 36px;
+    }
+
+    body {
+      background-color: #D1D7DC;
+      font-family: 'Fira Sans', sans-serif;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: inherit;
+    }
+
+    html {
+      box-sizing: border-box;
+    }
+
+    code {
+      background-color: #9AA3AC;
+      padding: 0 8px;
+    }
+    </style>
   </head>
   <body style="background-color:#34d2eb">
-    <link href="/navbar.html"/>
+    <div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
+
+<nav class="uk-navbar-container uk-margin" uk-navbar>
+    <!--<div class="uk-navbar-left">
+      <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="a2egroup" data-color="#5F7FFF" data-emoji=""  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
+        <div class="uk-navbar-left"><div>
+            <ul class="uk-navbar-nav">
+                <li>
+                    <a href="#">Features</a>
+                    <div class="uk-navbar-dropdown">
+                        <ul class="uk-nav uk-navbar-dropdown-nav">
+                            <li class="uk-active"><a href="#">Usage</a></li>
+                            <li><a href="#">Item</a></li>
+                            <li><a href="#">Item</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li><a href="#">User Dashboard</a></li>
+            </ul>
+        </div></div>
+    </div>-->
+    <div class="uk-navbar-center">
+        <a class="uk-navbar-item uk-logo" href="#">The Picture Game</a>
+    </div>
+    <div class="uk-navbar-right">
+        <div class="uk-navbar-right"><div>
+            <ul class="uk-navbar-nav">
+                <li><a href="#">Points</a></li>
+                <li><a href="#" id="pointsTotal">0</a></li>
+            </ul>
+        </div></div>
+    </div>
+</nav>
+
+</div>
     
     <div class="uk-flex uk-flex-center"><div class="uk-width-5-6 uk-flex uk-flex-center" uk-grid>
-      <link href="/dashGrid.html"/>
+      <div class="uk-grid uk-grid-match uk-width-1-1">
+
+<!-- Details -->
+    <div class="uk-width-1-2 uk-grid-item-match">
+        <div class="uk-card uk-card-default uk-card-hover">
+            <div class="uk-card-body">
+                <h3 class="uk-card-title">Play Game!</h3>
+                <p>Click through selected images and indicate which image stood out to you most!</p>
+            </div>
+            <div class="uk-card-footer">
+              <button class="uk-button uk-button-primary uk-width-1-1" onclick="startPlay()">Play!</button>
+            </div>
+        </div>
+    </div>
+
+<!-- Activity -->
+    <div class="uk-width-1-2">
+        <div class="uk-card uk-card-default uk-card-hover">
+            <div class="uk-card-body">
+                <h3 class="uk-card-title">Recent Activity</h3>
+                <p>Submit your own photo for users to click though and see the results!</p>
+            </div>
+            <div class="uk-card-footer">
+              <button class="uk-button uk-button-primary uk-width-1-1" onclick='window.open("https://docs.google.com/forms/d/e/1FAIpQLSf2jusJ8Ke23NCz1EzYOvkhUSK5ZxQE1wRWOcP8nWSPf7yUGQ/viewform?usp=sf_link")'>Submit!</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+    <!-- Full width bar -->
+    <!--<div class="uk-width-2-3">
+        <div class="uk-card uk-card-default uk-card-hover">
+            <div class="uk-card-body">
+                <h3 class="uk-card-title">Subscribers</h3>
+                <div class="uk-text-center uk-width-1-1 dashLoading">
+                    <div uk-spinner="ratio: 2"></div>
+                    <br><br>
+                </div>
+                <table class="uk-table uk-table-justify uk-table-divider uk-hidden dashLoaded uk-table-hover">
+                    <tbody>
+                        <thead>
+                            <tr>
+                                <th class="uk-width-1-2">Email</th>
+                                <th class="uk-width-1-4">Date Joined</th>
+                                <th class="uk-width-1-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tr>
+                            <td>Email</td>
+                            <td>Date</td>
+                            <td><a href="" uk-icon="mail"></a> <a href="" uk-icon="trash"></a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>-->
     </div></div>
 
     <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="a2egroup" data-description="Support me on Buy me a coffee!" data-message="" data-color="#5F7FFF" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
@@ -27,9 +275,273 @@
       <br>
     </div>
 
-    <link href="/playModal.html"/>
+    <div id="playModal" class="uk-flex-top" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
 
-    <link href="/js.html"/>
+        <h3 class="uk-modal-header uk-text-center" id="photoTitle">Click Through Images</h3>
+        <div class="uk-card-badge uk-label uk-text-left" id="photoTimer">Timer</div>
+        <button class="uk-modal-close-outside" type="button" uk-close></button>
+
+        <div class="uk-flex-center uk-text-center uk-width-1-1 uk-margin-large-top" id="photoLoading">
+          <span class="uk-margin-large" uk-spinner="ratio: 4.5"></span>
+        </div>
+        
+        <div class="uk-width-1-1 square uk-hidden" id="photos">
+
+          <img src="https://drive.google.com/thumbnail?id=1seypYswQZaKXk-LQfftH1CZWLbykw2mr" class="uk-width-1-1 content" id="1" onclick="hide(elem('1'));show(elem('2'))">
+          
+          <img src="https://drive.google.com/thumbnail?id=15-N6IjmiJ7bQBoRNbxxgrabJ4ZL3CGLr" class="uk-width-1-1 content uk-hidden" id="2" onclick="hide(elem('2'));show(elem('3'))">
+
+          <img src="https://drive.google.com/thumbnail?id=11TzpvD5hRNTwPs-5DfvrMj41-eii9_Nl" class="uk-width-1-1 content uk-hidden" id="3" onclick="hide(elem('photos'));show(elem('photoForm'))">
+
+        </div>
+
+        <div class="uk-flex-center uk-text-center uk-hidden uk-width-1-1" id="photoForm">
+          <button class="uk-button uk-button-default">Default</button>
+          <button class="uk-button uk-button-default">Default</button>
+          <button class="uk-button uk-button-default">Default</button>
+          <button class="uk-button uk-button-default">Default</button>
+        </div>
+
+        <div class="uk-flex-center uk-text-center uk-hidden uk-width-1-1" id="photoFinal">
+          <h3>You earned:</h3>
+          <h1 id="photoPoints">300</h1>
+          <h4>points</h4>
+          <br>
+          <i id="answerCompare"></i>
+          <br><br>
+          <button class="uk-button uk-button-primary uk-width-1-1" onclick="startPlay()">Play Again</button>
+        </div>
+    </div>
+</div>
+
+<div id="playID" class="uk-hidden"></div>
+<div id="startT" class="uk-hidden"></div>
+<div id="endT" class="uk-hidden"></div>
+
+<script>
+  function startPlay() {
+    elem('photoTitle').innerHTML = 'Loading...'
+    showPhotosElem('photoLoading')
+    hide(elem('photoTimer'))
+    UIkit.modal(elem('playModal')).show()
+    link(server()+"?action=getPhotos",loadPhotos)
+  }
+
+  function loadPhotos(data) {
+    if (data.msg == "success") {
+      elem('photos').innerHTML = ""
+      elem('photoForm').innerHTML = ""
+      elem('playID').innerHTML = data.id
+      var photos = data.photos
+      for (var i = 0; i<photos.length; i++) {
+        //create image
+        var img = document.createElement('img')
+        img.src = photos[i].url
+        img.id = 'photo'+i
+        img.className = "uk-width-1-1 content"
+        if (i != 0) {
+          img.className += " uk-hidden"
+        }
+        if (i < photos.length-1) {
+          img.setAttribute('onclick',"hide(elem('photo"+i+"'));show(elem('photo"+(i+1)+"'))")
+        } else {
+          img.setAttribute('onclick',"showPhotosElem('photoForm');show(elem('photoForm'));stopTimer();elem('photoTitle')='Most Memorable Photo'")
+        }
+        elem('photos').appendChild(img)
+        //create button
+        var button = document.createElement('button')
+        button.className = "uk-button uk-button-default photoButton uk-width-1-1"
+        button.innerHTML = photos[i].title
+        button.setAttribute('onclick',"selectPhotosButton('"+photos[i].url+"');elem('answerCompare').innerHTML='"+numStr(photos[i].rate*100,2)+"% of people chose "+photos[i].title+"!'")
+        elem('photoForm').appendChild(button)
+      }
+      
+      elem('photoTitle').innerHTML='Click Through Photos'
+      showPhotosElem('photos')
+      show(elem('photoTimer'))
+      startTimer()
+    } else {
+      alert('A server error occurred.')
+      UIkit.modal(elem('playModal')).close()
+    }
+  }
+
+  function selectPhotosButton(url) {
+    var id = elem('playID').innerHTML
+    //calculate points
+    var time = (elem('endT').innerHTML - elem('startT').innerHTML)/1000
+    var points = pointsFunc(time,10)
+    elem('photoPoints').innerHTML=points
+    elem('pointsTotal').innerHTML = Number(elem('pointsTotal').innerHTML) + points
+    link(server()+"?action=played&url="+url+"&user=me&pw=me2&id="+id+"&points="+points,function(data) {})
+    showPhotosElem('photoFinal')
+  }
+
+  function pointsFunc(t,base) {
+    var tMult = 10 / (1 + 1.7 * Math.pow(Math.E, 0.4 * (t - 1.8))) + 1 - 0.6 / (t - 2.9)
+    if (tMult > 3 || tMult < 0) {
+      tMult = 1
+    }
+    return Math.round(tMult * base)
+  }
+  
+  function startTimer() {
+    elem('startT').innerHTML = new Date().getTime()
+    elem('endT').innerHTML=""
+    incrementTimer()
+  }
+
+  function incrementTimer() {
+    var startT = Number(elem('startT').innerHTML)
+    if (elem('endT').innerHTML == "") {
+      var now = new Date().getTime()
+      elem('photoTimer').innerHTML=numStr((now-startT)/10,2)
+      setTimeout(incrementTimer,9)
+    } else {
+      var endT = Number(elem('endT').innerHTML)
+      elem('photoTimer').innerHTML=numStr((endT-startT)/10,2)
+    }
+  }
+
+  function stopTimer() {elem('endT').innerHTML = new Date().getTime()}
+
+  function showPhotosElem(id) {
+    var ids = ['photoLoading','photos','photoForm', 'photoFinal']
+    for (var i = 0; i < ids.length; i++) {
+      if (ids[i] == id) {
+        show(elem(ids[i]))
+      } else {
+        hide(elem(ids[i]))
+      }
+    }
+  }
+</script>
+
+    <script>
+  function refresh() {
+    var user = elem('user').innerHTML
+    var pw = elem('pw').innerHTML
+    dashLoading(true)
+    link(server()+"?action=refresh&user="+user+"&pass="+pw,refresh2)
+  }
+
+  function refresh2(data) {
+    elem('detailsTable').innerHTML=""
+    addToTable('detailsTable',data.details)
+    elem('activityTable').innerHTML=""
+    addToTable('activityTable',data.activity)
+    elem('subsTable').innerHTML=""
+    addToTable('subsTable',data.subs)
+    var rows = elem('subsTable').children
+    for (var i = 0; i < rows.length; i++) {
+      var email = rows[i].children[0].innerHTML
+      var td = document.createElement('td')
+      var mail = 'mailto:'+email
+      var remove = 'removeSub('+email+')'
+      td.innerHTML = '<a href="'+mail+'" uk-icon="mail"></a> <a href="" onclick="'+remove+'" uk-icon="trash"></a>'
+      rows[i].appendChild(td)
+    }
+    dashLoading(false)
+  }
+
+  function removeSub(email) {
+
+  }
+
+  function addToTable(id, data) {
+    var table = elem(id)
+    for (var i = 0; i<data.length; i++) {
+      var tr = document.createElement('tr')
+      for (var j = 0; j<data[i].length; j++) {
+        var td = document.createElement('td')
+        td.innerHTML = data[i][j]
+        tr.appendChild(td)
+      }
+    }
+  }
+
+  function dashLoading(loading) {
+    var preLoadingElems = document.getElementsByClassName('dashLoading')
+    var postLoadingElems = document.getElementsByClassName('dashLoaded')
+    for (var i = 0; i<preLoadingElems.length; i++) {
+      if (loading) {
+        show(preLoadingElems[i])
+      } else {
+        hide(preLoadingElems[i])
+      }
+    }
+    for (var i = 0; i<postLoadingElems.length; i++) {
+      if (loading) {
+        hide(postLoadingElems[i])
+      } else {
+        show(postLoadingElems[i])
+      }
+    }
+  }
+
+  function numStr(num, decimals) {
+    num = Math.round(num)
+    for (var i = 0; i<decimals; i++) {
+      var divisor = Math.pow(10,decimals - i)
+      if (num / divisor == Math.round(num / divisor)) {
+        var result = String(num / Math.pow(10,decimals))
+        if (num % Math.pow(10,decimals) == 0 && decimals > 0) {
+          result += "."
+        }
+        for (var n = 0; n < (decimals - i); n++) {
+          result += "0"
+        }
+        return result
+      }
+    }
+    return String(num / Math.pow(10,decimals))
+  }
+  
+  function encrypt(string) {
+    return CryptoJS.MD5(string)
+  }
+
+  function elem(id) {
+    return document.getElementById(id)
+  }
+
+  function hide(elem) {
+    elem.className += " uk-hidden"
+  }
+
+  function show(elem) {
+    var classes = elem.className
+    while (classes.indexOf('uk-hidden') > -1) {
+      classes = classes.replace('uk-hidden','')
+    }
+    elem.className = classes
+  }
+
+  function server() {
+    return "https://script.google.com/macros/s/AKfycbwIVik-Agw7jDn_12TW-9m7NWTWX1AZwO1KTXZnCNDI0vHQkjj0i6gO2fb7WwiuAb1E/exec"
+  }
+
+  function link(url, nextFunction) {
+    fetch(url).then(
+    function(response) {
+      response.json().then(function(data) {
+        nextFunction(data)
+      })
+    }).catch(function(error){
+        //alert('Error: '+error)
+        return 'Error: '+error
+      })
+  }
+  function randStr(num) {
+    var chars = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+    var result = ""
+    for (var i = 0; i<num; i++) {
+      result+= chars[Math.round(Math.random()*(chars.length-1))]
+    }
+    return result
+  }
+</script>
     <div id="user" hidden></div>
     <div id="pw" hidden></div>
   </body>
