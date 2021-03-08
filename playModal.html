@@ -1,0 +1,142 @@
+<div id="playModal" class="uk-flex-top" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+
+        <h3 class="uk-modal-header uk-text-center" id="photoTitle">Click Through Images</h3>
+        <div class="uk-card-badge uk-label uk-text-left" id="photoTimer">Timer</div>
+        <button class="uk-modal-close-outside" type="button" uk-close></button>
+
+        <div class="uk-flex-center uk-text-center uk-width-1-1 uk-margin-large-top" id="photoLoading">
+          <span class="uk-margin-large" uk-spinner="ratio: 4.5"></span>
+        </div>
+        
+        <div class="uk-width-1-1 square uk-hidden" id="photos">
+
+          <img src="https://drive.google.com/thumbnail?id=1seypYswQZaKXk-LQfftH1CZWLbykw2mr" class="uk-width-1-1 content" id="1" onclick="hide(elem('1'));show(elem('2'))">
+          
+          <img src="https://drive.google.com/thumbnail?id=15-N6IjmiJ7bQBoRNbxxgrabJ4ZL3CGLr" class="uk-width-1-1 content uk-hidden" id="2" onclick="hide(elem('2'));show(elem('3'))">
+
+          <img src="https://drive.google.com/thumbnail?id=11TzpvD5hRNTwPs-5DfvrMj41-eii9_Nl" class="uk-width-1-1 content uk-hidden" id="3" onclick="hide(elem('photos'));show(elem('photoForm'))">
+
+        </div>
+
+        <div class="uk-flex-center uk-text-center uk-hidden uk-width-1-1" id="photoForm">
+          <button class="uk-button uk-button-default">Default</button>
+          <button class="uk-button uk-button-default">Default</button>
+          <button class="uk-button uk-button-default">Default</button>
+          <button class="uk-button uk-button-default">Default</button>
+        </div>
+
+        <div class="uk-flex-center uk-text-center uk-hidden uk-width-1-1" id="photoFinal">
+          <h3>You earned:</h3>
+          <h1 id="photoPoints">300</h1>
+          <h4>points</h4>
+          <br>
+          <i id="answerCompare"></i>
+          <br><br>
+          <button class="uk-button uk-button-primary uk-width-1-1" onclick="startPlay()">Play Again</button>
+        </div>
+    </div>
+</div>
+
+<div id="playID" class="uk-hidden"></div>
+<div id="startT" class="uk-hidden"></div>
+<div id="endT" class="uk-hidden"></div>
+
+<script>
+  function startPlay() {
+    elem('photoTitle').innerHTML = 'Loading...'
+    showPhotosElem('photoLoading')
+    hide(elem('photoTimer'))
+    UIkit.modal(elem('playModal')).show()
+    link(server()+"?action=getPhotos",loadPhotos)
+  }
+
+  function loadPhotos(data) {
+    if (data.msg == "success") {
+      elem('photos').innerHTML = ""
+      elem('photoForm').innerHTML = ""
+      elem('playID').innerHTML = data.id
+      var photos = data.photos
+      for (var i = 0; i<photos.length; i++) {
+        //create image
+        var img = document.createElement('img')
+        img.src = photos[i].url
+        img.id = 'photo'+i
+        img.className = "uk-width-1-1 content"
+        if (i != 0) {
+          img.className += " uk-hidden"
+        }
+        if (i < photos.length-1) {
+          img.setAttribute('onclick',"hide(elem('photo"+i+"'));show(elem('photo"+(i+1)+"'))")
+        } else {
+          img.setAttribute('onclick',"showPhotosElem('photoForm');show(elem('photoForm'));stopTimer();elem('photoTitle')='Most Memorable Photo'")
+        }
+        elem('photos').appendChild(img)
+        //create button
+        var button = document.createElement('button')
+        button.className = "uk-button uk-button-default photoButton uk-width-1-1"
+        button.innerHTML = photos[i].title
+        button.setAttribute('onclick',"selectPhotosButton('"+photos[i].url+"');elem('answerCompare').innerHTML='"+numStr(photos[i].rate*100,2)+"% of people chose "+photos[i].title+"!'")
+        elem('photoForm').appendChild(button)
+      }
+      
+      elem('photoTitle').innerHTML='Click Through Photos'
+      showPhotosElem('photos')
+      show(elem('photoTimer'))
+      startTimer()
+    } else {
+      alert('A server error occurred.')
+      UIkit.modal(elem('playModal')).close()
+    }
+  }
+
+  function selectPhotosButton(url) {
+    var id = elem('playID').innerHTML
+    //calculate points
+    var time = (elem('endT').innerHTML - elem('startT').innerHTML)/1000
+    var points = pointsFunc(time,10)
+    elem('photoPoints').innerHTML=points
+    elem('pointsTotal').innerHTML = Number(elem('pointsTotal').innerHTML) + points
+    link(server()+"?action=played&url="+url+"&user=me&pw=me2&id="+id+"&points="+points,function(data) {})
+    showPhotosElem('photoFinal')
+  }
+
+  function pointsFunc(t,base) {
+    var tMult = 10 / (1 + 1.7 * Math.pow(Math.E, 0.4 * (t - 1.8))) + 1 - 0.6 / (t - 2.9)
+    if (tMult > 3 || tMult < 0) {
+      tMult = 1
+    }
+    return Math.round(tMult * base)
+  }
+  
+  function startTimer() {
+    elem('startT').innerHTML = new Date().getTime()
+    elem('endT').innerHTML=""
+    incrementTimer()
+  }
+
+  function incrementTimer() {
+    var startT = Number(elem('startT').innerHTML)
+    if (elem('endT').innerHTML == "") {
+      var now = new Date().getTime()
+      elem('photoTimer').innerHTML=numStr((now-startT)/10,2)
+      setTimeout(incrementTimer,9)
+    } else {
+      var endT = Number(elem('endT').innerHTML)
+      elem('photoTimer').innerHTML=numStr((endT-startT)/10,2)
+    }
+  }
+
+  function stopTimer() {elem('endT').innerHTML = new Date().getTime()}
+
+  function showPhotosElem(id) {
+    var ids = ['photoLoading','photos','photoForm', 'photoFinal']
+    for (var i = 0; i < ids.length; i++) {
+      if (ids[i] == id) {
+        show(elem(ids[i]))
+      } else {
+        hide(elem(ids[i]))
+      }
+    }
+  }
+</script>
