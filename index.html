@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html style="background-color:#34d2eb">
   <head>
+    <script data-ad-client="ca-pub-1569802862994624" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     <base target="_top">
     <title>Photo Game</title>
     <meta name="robots" content="noindex">
@@ -521,7 +522,7 @@
 
     <script>
 
-  function showPoints() {
+    function showPoints() {
     var user = elem('user').innerHTML
     var pw = elem('pw').innerHTML
     if (user == '' || pw == '') {
@@ -529,8 +530,8 @@
     }
     else{
       var code = randStr(100)
-      link(server()+"?action=createCode&code="+code+"&user="+user+"&pw="+pw)
-      window.open("https://a2egroup.us/points?code="+code+"&p="+Number(elem('points').innerHTML*123456789))
+      link(server()+"?action=createCode&code="+code+"&user="+user+"&pw="+pw, function() {})
+      window.open("https://a2egroup.us/points/?code="+code+"&p="+Number(elem('points').innerHTML*123456789))
     }
   }
 
