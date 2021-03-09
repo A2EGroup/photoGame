@@ -20,6 +20,100 @@
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-BLD8QSSDG1"></script>
+    <div id="authModal" class="uk-flex-top" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+
+        <h3 class="uk-modal-header uk-text-center">Enter Account Details</h3>
+
+        <div class="uk-flex uk-flex-center">
+          <div class="uk-width-2-3">
+            <label class="uk-form-label" for="username">Email</label>
+            <input id="username" class="uk-input" type="email">
+
+            <br><br>
+
+            <label class="uk-form-label" for="password">Password</label>
+            <input id="password" class="uk-input" type="password">
+
+            <br>
+            
+            <div uk-alert id="authNoPass" class="uk-alert-danger uk-hidden">
+                <p>Incorrect password. <a onclick="forgotPass()">Forgot your password?</a></p>
+            </div>
+            <div uk-alert id="authNoUser" class="uk-alert-danger uk-hidden">
+                <p>Username not found. Please try again or <a href="mailto:contact@a2egroup.us">contact customer service</a>.</p>
+            </div>
+            <div uk-alert id="authError" class="uk-alert-danger uk-hidden">
+                <p id="authErrorText"></p>
+            </div>
+
+            <br>
+
+          </div>
+        </div>
+
+        <div class="uk-modal-footer">
+            <button class="uk-button uk-button-primary uk-width-1-1" id="authButton" onclick="authCheck()">Sign In</button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+  
+  function authCheck() {
+    hide(elem('authNoPass'))
+    hide(elem('authNoUser'))
+    hide(elem('authError'))
+    elem('authButton').innerHTML='<div uk-spinner style="color:#ffffff"></div>'
+    elem('username').setAttribute('disabled','true')
+    elem('password').setAttribute('disabled','true')
+    var email = elem('username').value
+    var hash = encrypt(elem('password').value)
+    
+    link(server()+"?action=auth&user="+email+"&pass="+hash, authCheck2)
+  }
+  function authCheck2(data) {
+    if (String(data).indexOf('Error: ') > -1) {
+      elem('authErrorText').innerHTML=data
+      show(elem('authError'))
+    } else if (data.msg == 'authNoUser') {
+      show(elem('authNoUser'))
+    } else if (data.msg == 'authNoPass') {
+      show(elem('authNoPass'))
+    } else if (data.msg == 'authSuccess') {
+      elem('user').innerHTML = data.email
+      elem('pw').innerHTML = data.pass
+      UIkit.modal(elem('authModal')).hide()
+      elem('password').value = data.pass
+      elem('accountName').innerHTML = data.email
+      //refresh()
+    } else {
+      elem('authErrorText').innerHTML='Unknown server error occurred. Please try again later.'
+      show(elem('authError'))
+    }
+
+    elem('authButton').innerHTML='Sign In'
+    elem('username').removeAttribute('disabled')
+    elem('password').removeAttribute('disabled')
+  }
+
+  function forgotPass() {
+    hide(elem('authNoPass'))
+    var email = elem('username').value
+    var pass = randStr(6)
+    link(server()+"?action=newPass&user="+email+"&pass="+pass+"&hash="+encrypt(pass), authCheck2)
+    elem('authButton').innerHTML='Sign In'
+    elem('username').removeAttribute('disabled')
+    elem('password').removeAttribute('disabled')
+    UIkit.notification({
+      message: 'New password emailed to you.',
+      status: 'primary',
+      pos: 'top-right',
+      timeout: 7000
+    });
+  }
+</script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
