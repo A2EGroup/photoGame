@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html style="background-color:#34d2eb">
+  <head>
+    <base target="_top">
+    <title>Photo Game</title>
+    <meta name="robots" content="noindex">
+        <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.16/dist/css/uikit.min.css"/>
+
+    <!-- UIkit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.16/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.16/dist/js/uikit-icons.min.js"></script>
+
+    <!-- Encrypter -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+    <script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/md5.js"></script>
+
+    <!-- Icons -->
+    <script src="uikit/dist/js/uikit-icons.min.js"></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BLD8QSSDG1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-BLD8QSSDG1');
+    </script>
+
+    <style>
+      .square {
+        position: relative;
+        width:100%
+      }
+      .square:after {
+        content: "";
+        display: block;
+        padding-bottom: 100%;
+      }
+      .content {
+        position: absolute;
+        width: 100%;
+        overflow: hidden;
+      }
+    </style>
+
+    <!-- Radio Buttons -->
+    <style>
+      .inputGroup {
+        background-color: #fff;
+        display: block;
+        margin: 10px 0;
+        position: relative;
+
+        label {
+          padding: 12px 30px;
+          width: 100%;
+          display: block;
+          text-align: left;
+          color: #3C454C;
+          cursor: pointer;
+          position: relative;
+          z-index: 2;
+          transition: color 200ms ease-in;
+          overflow: hidden;
+
+          &:before {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            content: '';
+            background-color: #5562eb;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale3d(1, 1, 1);
+            transition: all 300ms cubic-bezier(0.4, 0.0, 0.2, 1);
+            opacity: 0;
+            z-index: -1;
+          }
+
+          &:after {
+            width: 32px;
+            height: 32px;
+            content: '';
+            border: 2px solid #D1D7DC;
+            background-color: #fff;
+            background-image: url("data:image/svg+xml,%3Csvg width='32' height='32' viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M5.414 11L4 12.414l5.414 5.414L20.828 6.414 19.414 5l-10 10z' fill='%23fff' fill-rule='nonzero'/%3E%3C/svg%3E ");
+            background-repeat: no-repeat;
+            background-position: 2px 3px;
+            border-radius: 50%;
+            z-index: 2;
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            transition: all 200ms ease-in;
+          }
+        }
+
+        input:checked ~ label {
+          color: #fff;
+
+          &:before {
+            transform: translate(-50%, -50%) scale3d(56, 56, 1);
+            opacity: 1;
+          }
+
+          &:after {
+            background-color: #54E0C7;
+            border-color: #54E0C7;
+          }
+        }
+
+        input {
+          width: 32px;
+          height: 32px;
+          order: 1;
+          z-index: 2;
+          position: absolute;
+          right: 30px;
+          top: 50%;
+          transform: translateY(-50%);
+          cursor: pointer;
+          visibility: hidden;
+        }
+      }
+
+
+    // codepen formatting
+    .form {
+      padding: 0 16px;
+      max-width: 550px;
+      margin: 50px auto;
+      font-size: 18px;
+      font-weight: 600;
+      line-height: 36px;
+    }
+
+    body {
+      background-color: #D1D7DC;
+      font-family: 'Fira Sans', sans-serif;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: inherit;
+    }
+
+    html {
+      box-sizing: border-box;
+    }
+
+    code {
+      background-color: #9AA3AC;
+      padding: 0 8px;
+    }
+    </style>
+  </head>
+  <body style="background-color:#34d2eb" onload="setPoints()">
+    <div uk-sticky="sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky">
+
+<nav class="uk-navbar-container uk-margin" uk-navbar>
+    <!--<div class="uk-navbar-left">
+      <script type="text/javascript" src="https://cdnjs.buymeacoffee.com/1.0.0/button.prod.min.js" data-name="bmc-button" data-slug="a2egroup" data-color="#5F7FFF" data-emoji=""  data-font="Bree" data-text="Buy me a coffee" data-outline-color="#000000" data-font-color="#ffffff" data-coffee-color="#FFDD00" ></script>
+        <div class="uk-navbar-left"><div>
+            <ul class="uk-navbar-nav">
+                <li>
+                    <a href="#">Features</a>
+                    <div class="uk-navbar-dropdown">
+                        <ul class="uk-nav uk-navbar-dropdown-nav">
+                            <li class="uk-active"><a href="#">Usage</a></li>
+                            <li><a href="#">Item</a></li>
+                            <li><a href="#">Item</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li><a href="#">User Dashboard</a></li>
+            </ul>
+        </div></div>
+    </div>-->
+    <div class="uk-navbar-center">
+        <a class="uk-navbar-item uk-logo" href="https://a2egroup.us">The Picture Game</a>
+    </div>
+    <div class="uk-navbar-right">
+        <div class="uk-navbar-right"><div>
+            <ul class="uk-navbar-nav">
+                <li><a onclick="showPoints()" id="accountName">Account</a></li>
+                <li><a onclick="showPoints()">Points</a></li>
+                <li><a onclick="showPoints()" id="pointsTotal">0</a></li>
+            </ul>
+        </div></div>
+    </div>
+</nav>
+
+</div>
+    
+    <div class="uk-flex uk-flex-center"><div class="uk-width-5-6 uk-flex uk-flex-center" uk-grid>
+      <div class="uk-width-1-1 uk-grid-item-match">
+        <div class="uk-card uk-card-default uk-card-hover">
+            <div class="uk-card-body">
+                <h1 id="pointsCount">You have 150 points!</h1>
+            </div>
+            <div class="uk-card-footer">
+              <p>Redeem your points below for gift cards and rewards!</p>
+            </div>
+        </div>
+    </div>
+
+<div class="uk-grid uk-grid-match uk-width-1-1">
+
+    <div class="uk-width-1-2 uk-grid-item-match">
+        <div class="uk-card uk-card-default uk-card-hover">
+            <div class="uk-card-body">
+                <h3 class="uk-card-title">$10 Amazon Gift Card</h3>
+                <img src="https://kellysthoughtsonthings.com/wp-content/uploads/2018/05/Know-All-about-Amazon-Gift-Cards.png" class="uk-img uk-width-1-1">
+            </div>
+            <div class="uk-card-footer">
+              <button class="uk-button uk-button-primary uk-width-1-1" href="https://docs.google.com/forms/d/e/1FAIpQLSeQVkw52vBVTv03Gk1G8X5soahepEG9JHiy62bdANVCPMZWlw/viewform?usp=sf_link" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSeQVkw52vBVTv03Gk1G8X5soahepEG9JHiy62bdANVCPMZWlw/viewform?usp=sf_link')">10000 Points</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="uk-width-1-2">
+        <div class="uk-card uk-card-default uk-card-hover">
+            <div class="uk-card-body">
+                <h3 class="uk-card-title">$25 Apple Gift Card</h3>
+                <img src="https://productimages.nimbledeals.com/gift_card_skin/54b3b5942bee5b752db3581f1e5e6dff_1614141458626" class="uk-img uk-width-1-1">
+            </div>
+            <div class="uk-card-footer">
+              <button class="uk-button uk-button-primary uk-width-1-1" href="https://docs.google.com/forms/d/e/1FAIpQLSeQVkw52vBVTv03Gk1G8X5soahepEG9JHiy62bdANVCPMZWlw/viewform?usp=sf_link" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSeQVkw52vBVTv03Gk1G8X5soahepEG9JHiy62bdANVCPMZWlw/viewform?usp=sf_link')">25000 Points</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="uk-width-1-2">
+        <div class="uk-card uk-card-default uk-card-hover">
+            <div class="uk-card-body">
+                <h3 class="uk-card-title">$30 Google Play Gift Card</h3>
+                <img src="https://media.gamestop.com/i/gamestop/10138909/Google-Play-Gift-Card-$25" class="uk-img uk-width-1-1">
+            </div>
+            <div class="uk-card-footer">
+              <button class="uk-button uk-button-primary uk-width-1-1" href="https://docs.google.com/forms/d/e/1FAIpQLSeQVkw52vBVTv03Gk1G8X5soahepEG9JHiy62bdANVCPMZWlw/viewform?usp=sf_link" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSeQVkw52vBVTv03Gk1G8X5soahepEG9JHiy62bdANVCPMZWlw/viewform?usp=sf_link')">30000 Points</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="uk-width-1-2">
+        <div class="uk-card uk-card-default uk-card-hover">
+            <div class="uk-card-body">
+                <h3 class="uk-card-title">$50 Airbnb Gift Card</h3>
+                <img src="https://www.paypalobjects.com/digitalassets/c/gifts/us/airbnb.png" class="uk-img uk-width-1-1">
+            </div>
+            <div class="uk-card-footer">
+              <button class="uk-button uk-button-primary uk-width-1-1" href="https://docs.google.com/forms/d/e/1FAIpQLSeQVkw52vBVTv03Gk1G8X5soahepEG9JHiy62bdANVCPMZWlw/viewform?usp=sf_link" onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSeQVkw52vBVTv03Gk1G8X5soahepEG9JHiy62bdANVCPMZWlw/viewform?usp=sf_link')">50000 Points</button>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+    <!-- Full width bar -->
+    <!--<div class="uk-width-2-3">
+        <div class="uk-card uk-card-default uk-card-hover">
+            <div class="uk-card-body">
+                <h3 class="uk-card-title">Subscribers</h3>
+                <div class="uk-text-center uk-width-1-1 dashLoading">
+                    <div uk-spinner="ratio: 2"></div>
+                    <br><br>
+                </div>
+                <table class="uk-table uk-table-justify uk-table-divider uk-hidden dashLoaded uk-table-hover">
+                    <tbody>
+                        <thead>
+                            <tr>
+                                <th class="uk-width-1-2">Email</th>
+                                <th class="uk-width-1-4">Date Joined</th>
+                                <th class="uk-width-1-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tr>
+                            <td>Email</td>
+                            <td>Date</td>
+                            <td><a href="" uk-icon="mail"></a> <a href="" uk-icon="trash"></a></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>-->
+    </div></div>
+
+    <script data-name="BMC-Widget" data-cfasync="false" src="https://cdnjs.buymeacoffee.com/1.0.0/widget.prod.min.js" data-id="a2egroup" data-description="Support me on Buy me a coffee!" data-message="" data-color="#5F7FFF" data-position="Right" data-x_margin="18" data-y_margin="18"></script>
+
+
+
+    <!-- Footer -->
+    <br>
+    <div class="uk-width-1-1 uk-background-muted">
+      <br>
+      <div class="uk-grid uk-child-width-expand uk-text-center">
+        <small><a href="https://a2egroup.us">Homepage</a></small>
+        <small><a href="mailto:contact@a2egroup.us">Contact Us</a></small>
+      </div>
+      <br>
+    </div>
+
+    <script>
+
+  function showPoints() {
+    var user = elem('user').innerHTML
+    var pw = elem('pw').innerHTML
+    if (user == '' || pw == '') {
+      UIkit.modal(elem('authModal')).show()
+    }
+    else{
+      var code = randStr(100)
+      link(server()+"?action=createCode&code="+code+"&user="+user+"&pw="+pw)
+      window.open("https://a2egroup.us/points?code="+code+"&p="+Number(elem('points').innerHTML*123456789))
+    }
+  }
+
+  function addToTable(id, data) {
+    var table = elem(id)
+    for (var i = 0; i<data.length; i++) {
+      var tr = document.createElement('tr')
+      for (var j = 0; j<data[i].length; j++) {
+        var td = document.createElement('td')
+        td.innerHTML = data[i][j]
+        tr.appendChild(td)
+      }
+    }
+  }
+
+  function numStr(num, decimals) {
+    num = Math.round(num)
+    for (var i = 0; i<decimals; i++) {
+      var divisor = Math.pow(10,decimals - i)
+      if (num / divisor == Math.round(num / divisor)) {
+        var result = String(num / Math.pow(10,decimals))
+        if (num % Math.pow(10,decimals) == 0 && decimals > 0) {
+          result += "."
+        }
+        for (var n = 0; n < (decimals - i); n++) {
+          result += "0"
+        }
+        return result
+      }
+    }
+    return String(num / Math.pow(10,decimals))
+  }
+  
+  function encrypt(string) {
+    return CryptoJS.MD5(string)
+  }
+
+  function elem(id) {
+    return document.getElementById(id)
+  }
+
+  function hide(elem) {
+    elem.className += " uk-hidden"
+  }
+
+  function show(elem) {
+    var classes = elem.className
+    while (classes.indexOf('uk-hidden') > -1) {
+      classes = classes.replace('uk-hidden','')
+    }
+    elem.className = classes
+  }
+
+  function server() {
+    return "https://script.google.com/macros/s/AKfycbwIVik-Agw7jDn_12TW-9m7NWTWX1AZwO1KTXZnCNDI0vHQkjj0i6gO2fb7WwiuAb1E/exec"
+  }
+
+  function link(url, nextFunction) {
+    fetch(url).then(
+    function(response) {
+      response.json().then(function(data) {
+        nextFunction(data)
+      })
+    }).catch(function(error){
+        //alert('Error: '+error)
+        return 'Error: '+error
+      })
+  }
+  function randStr(num) {
+    var chars = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
+    var result = ""
+    for (var i = 0; i<num; i++) {
+      result+= chars[Math.round(Math.random()*(chars.length-1))]
+    }
+    return result
+  }
+</script>
+    <script>
+      function setPoints() {
+        var queryString = window.location.search;
+        var urlParams = new URLSearchParams(queryString);
+        var points = Number(urlParams.get('p'))/123456789
+        elem('pointsCount').innerHTML="You have "+points+" points!"
+      }
+    </script>
+  </body>
+</html>
