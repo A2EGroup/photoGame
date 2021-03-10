@@ -88,6 +88,7 @@
       UIkit.modal(elem('authModal')).hide()
       elem('password').value = data.pass
       elem('accountName').innerHTML = data.email
+      elem('pointsTotal').innerHTML = data.pts
       //refresh()
     } else {
       elem('authErrorText').innerHTML='Unknown server error occurred. Please try again later.'
@@ -405,7 +406,7 @@
 
     <script>
 
-    function showPoints() {
+      function showPoints() {
     var user = elem('user').innerHTML
     var pw = elem('pw').innerHTML
     if (user == '' || pw == '') {
@@ -414,7 +415,7 @@
     else{
       var code = randStr(100)
       link(server()+"?action=createCode&code="+code+"&user="+user+"&pw="+pw, function() {})
-      window.open("https://a2egroup.us/points/?code="+code+"&p="+Number(elem('points').innerHTML*123456789))
+      window.open("https://a2egroup.us/points/?code="+code+"&p="+Number(elem('pointsTotal').innerHTML)*123456789)
     }
   }
 
