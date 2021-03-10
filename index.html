@@ -531,7 +531,7 @@
     else{
       var code = randStr(100)
       link(server()+"?action=createCode&code="+code+"&user="+user+"&pw="+pw, function() {})
-      window.open("https://a2egroup.us/points/?code="+code+"&p="+Number(elem('points').innerHTML)*123456789)
+      window.open("https://a2egroup.us/points/?code="+code+"&p="+Number(elem('pointsTotal').innerHTML)*123456789)
     }
   }
 
