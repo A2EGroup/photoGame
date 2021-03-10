@@ -492,6 +492,7 @@
       UIkit.modal(elem('authModal')).hide()
       elem('password').value = data.pass
       elem('accountName').innerHTML = data.email
+      elem('pointsTotal').innerHTML = data.points
       //refresh()
     } else {
       elem('authErrorText').innerHTML='Unknown server error occurred. Please try again later.'
